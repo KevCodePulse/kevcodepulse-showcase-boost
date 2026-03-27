@@ -12,7 +12,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
+    <div className="min-h-screen bg-background flex flex-col w-full overflow-x-hidden">
       <Navbar />
       <main className="flex-1">{children}</main>
       <Footer />
