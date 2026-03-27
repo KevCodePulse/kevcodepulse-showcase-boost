@@ -5,17 +5,20 @@ import clientsImg from "@/assets/testimonials-clients.jpg";
 
 const testimonials = [
   {
-    quote: "Our new website doubled our leads in 2 months. The team at KevCodePulse really understands what businesses need.",
+    quote:
+      "Our new website doubled our leads in 2 months. The team at KevCodePulse really understands what businesses need.",
     name: "Dr. Amani W.",
     title: "Clinic Owner, Nairobi",
   },
   {
-    quote: "They delivered a stunning e-commerce site ahead of schedule. Our online sales jumped 85% in the first quarter.",
+    quote:
+      "They delivered a stunning e-commerce site ahead of schedule. Our online sales jumped 85% in the first quarter.",
     name: "James K.",
     title: "Founder, SokoMart",
   },
   {
-    quote: "Professional, communicative, and affordable. They made the whole process seamless from start to finish.",
+    quote:
+      "Professional, communicative, and affordable. They made the whole process seamless from start to finish.",
     name: "Sarah M.",
     title: "Agency Director, Mombasa",
   },
@@ -26,7 +29,11 @@ const ease = [0.23, 1, 0.32, 1] as const;
 const Testimonials = () => (
   <section className="py-20 md:py-28 bg-muted/30">
     <div className="container mx-auto px-6">
-      <SectionHeading badge="Testimonials" title="What Our Clients Say" centered />
+      <SectionHeading
+        badge="Testimonials"
+        title="What Our Clients Say"
+        centered
+      />
 
       {/* Clients photo banner */}
       <motion.div
@@ -56,7 +63,11 @@ const Testimonials = () => (
           >
             <div className="flex gap-1 mb-4">
               {[...Array(5)].map((_, j) => (
-                <Star key={j} className="w-4 h-4 text-primary" fill="hsl(43 96% 56%)" />
+                <Star
+                  key={j}
+                  className="w-4 h-4 text-primary"
+                  fill="hsl(43 96% 56%)"
+                />
               ))}
             </div>
             <p className="text-foreground leading-relaxed mb-6">"{t.quote}"</p>
@@ -65,7 +76,9 @@ const Testimonials = () => (
                 {t.name[0]}
               </div>
               <div>
-                <p className="font-display font-bold text-sm text-foreground">{t.name}</p>
+                <p className="font-display font-bold text-sm text-foreground">
+                  {t.name}
+                </p>
                 <p className="text-xs text-muted-foreground">{t.title}</p>
               </div>
             </div>
