@@ -12,9 +12,9 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
   }, [pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col w-full overflow-x-hidden">
+    <div className="min-h-screen bg-background flex flex-col w-full max-w-[100vw] overflow-x-hidden">
       <Navbar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 overflow-x-hidden">{children}</main>
       <Footer />
       <WhatsAppButton />
     </div>
