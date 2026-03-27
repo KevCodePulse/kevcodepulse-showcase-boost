@@ -1,57 +1,218 @@
 import { useParams, Link, Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Clock, Calendar, User, ArrowRight, Facebook, Twitter, Linkedin, Link2, Check } from "lucide-react";
+import {
+  ArrowLeft,
+  Clock,
+  Calendar,
+  User,
+  ArrowRight,
+  Facebook,
+  Twitter,
+  Linkedin,
+  Link2,
+  Check,
+} from "lucide-react";
 import { useState, useEffect, useMemo } from "react";
-import posts from "@/data/blogPosts";
+import { fetchPosts, mapPosts } from "../services/blogService";
 
 const ease = [0.23, 1, 0.32, 1] as const;
 
+// ------------------------------
+// TYPES
+// ------------------------------
+type WPPost = {
+  id: number;
+  slug: string;
+  date: string;
+  title: { rendered: string };
+  content: { rendered: string };
+  excerpt: { rendered: string };
+  _embedded?: any;
+  featured_media_url?: string;
+};
+
+type BlogPostType = {
+  slug: string;
+  title: string;
+  category: string;
+  author: string;
+  date: string;
+  readTime: string;
+  image: string;
+  content: string[];
+};
+
+// ------------------------------
+// WORDPRESS FETCH + TRANSFORM
+// ------------------------------
+const fetchPost = async (slug: string): Promise<BlogPostType | null> => {
+  const res = await fetch(
+    `https://dimgrey-eagle-927666.hostingersite.com/wp-json/wp/v2/posts?slug=${slug}&_embed`,
+  );
+
+  const data: WPPost[] = await res.json();
+  const post = data[0];
+
+  if (!post) return null;
+
+  // Convert HTML → array of blocks
+  const htmlToBlocks = (html: string) => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+
+    const blocks: string[] = [];
+
+    div.querySelectorAll("h2, h3, p").forEach((el) => {
+      const text = el.textContent?.trim();
+      if (!text) return;
+
+      if (el.tagName === "H2") {
+        blocks.push(`## ${text}`);
+      } else {
+        blocks.push(text);
+      }
+    });
+
+    return blocks;
+  };
+
+  return {
+    slug: post.slug,
+    title: post.title.rendered,
+    category: "Category",
+    author: post._embedded?.author?.[0]?.name || "Admin",
+    date: new Date(post.date).toLocaleDateString(),
+    readTime: "5 min read",
+    image: post._embedded?.["wp:featuredmedia"]?.[0]?.source_url || "",
+    content: htmlToBlocks(post.content.rendered),
+  };
+};
+
+// ------------------------------
+// COMPONENT
+// ------------------------------
 const BlogPost = () => {
   const { slug } = useParams<{ slug: string }>();
-  const post = posts.find((p) => p.slug === slug);
+
+  const [post, setPost] = useState<BlogPostType | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const [activeHeading, setActiveHeading] = useState("");
   const [copied, setCopied] = useState(false);
 
-  // Extract headings from content
+  const [posts, setPosts] = useState<any[]>([]);
+
+  // FETCH ALL POSTS
+  useEffect(() => {
+    async function loadPosts() {
+      try {
+        const raw = await fetchPosts();
+        const mapped = mapPosts(raw);
+        setPosts(mapped);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    loadPosts();
+  }, []);
+
+  // FETCH POST
+  useEffect(() => {
+    if (!slug) return;
+
+    const load = async () => {
+      setLoading(true);
+      const data = await fetchPost(slug);
+      setPost(data);
+      setLoading(false);
+    };
+
+    load();
+  }, [slug]);
+
+  // HEADINGS
   const headings = useMemo(() => {
     if (!post) return [];
+
     return post.content
       .filter((block) => block.startsWith("## "))
       .map((block) => {
         const text = block.replace("## ", "");
-        const id = text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+        const id = text
+          .toLowerCase()
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/(^-|-$)/g, "");
+
         return { text, id };
       });
   }, [post]);
 
-  // Track active heading on scroll
+  // SCROLL SPY
   useEffect(() => {
     if (!headings.length) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries.find((e) => e.isIntersecting);
         if (visible) setActiveHeading(visible.target.id);
       },
-      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 }
+      { rootMargin: "-80px 0px -60% 0px", threshold: 0.1 },
     );
+
     headings.forEach((h) => {
       const el = document.getElementById(h.id);
       if (el) observer.observe(el);
     });
+
     return () => observer.disconnect();
   }, [headings]);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-4">
+          {/* Spinner */}
+          <motion.div
+            animate={{ rotate: 360 }}
+            transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+            className="w-10 h-10 rounded-full border-4 border-primary/20 border-t-primary"
+          />
+
+          {/* Text */}
+          <p className="text-sm text-muted-foreground font-medium tracking-wide">
+            Loading post...
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (!post) return <Navigate to="/blog" replace />;
 
-  const otherPosts = posts.filter((p) => p.slug !== slug).slice(0, 4);
+  // Remove current post
+  const otherPosts = posts.filter((p) => p.slug !== slug);
+
   const pageUrl = typeof window !== "undefined" ? window.location.href : "";
   const encodedUrl = encodeURIComponent(pageUrl);
   const encodedTitle = encodeURIComponent(post.title);
 
   const shareLinks = [
-    { icon: Twitter, label: "Twitter", href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}` },
-    { icon: Facebook, label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}` },
-    { icon: Linkedin, label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` },
+    {
+      icon: Twitter,
+      label: "Twitter",
+      href: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedTitle}`,
+    },
+    {
+      icon: Facebook,
+      label: "Facebook",
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+    },
+    {
+      icon: Linkedin,
+      label: "LinkedIn",
+      href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+    },
   ];
 
   const handleCopyLink = () => {
@@ -67,7 +228,7 @@ const BlogPost = () => {
 
   return (
     <>
-      {/* Hero */}
+      {/* HERO */}
       <section className="pt-28 pb-12 md:pt-36 md:pb-16 bg-gradient-to-b from-primary/5 to-background">
         <div className="container mx-auto px-6 max-w-4xl">
           <Link
@@ -104,7 +265,9 @@ const BlogPost = () => {
 
             {/* Share Icons Row */}
             <div className="mt-5 flex items-center gap-3">
-              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Share:</span>
+              <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                Share:
+              </span>
               {shareLinks.map((s) => (
                 <a
                   key={s.label}
@@ -122,7 +285,11 @@ const BlogPost = () => {
                 aria-label="Copy link"
                 className="w-8 h-8 rounded-full border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
               >
-                {copied ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Link2 className="w-3.5 h-3.5" />}
+                {copied ? (
+                  <Check className="w-3.5 h-3.5 text-green-500" />
+                ) : (
+                  <Link2 className="w-3.5 h-3.5" />
+                )}
               </button>
             </div>
           </motion.div>
@@ -160,82 +327,60 @@ const BlogPost = () => {
             >
               <div className="prose-custom">
                 {post.content.map((block, i) => {
-                  const midPoint = Math.floor(post.content.length / 2);
-                  const showCta = i === midPoint;
                   const isHeading = block.startsWith("## ");
-                  const headingText = isHeading ? block.replace("## ", "") : "";
-                  const headingId = isHeading
-                    ? headingText.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "")
-                    : "";
+                  const text = isHeading ? block.replace("## ", "") : "";
+                  const id = text
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]+/g, "-")
+                    .replace(/(^-|-$)/g, "");
 
-                  return (
-                    <div key={i}>
-                      {showCta && (
-                        <div className="my-10 p-6 rounded-xl bg-primary/5 border border-primary/20">
-                          <p className="font-display text-lg font-bold text-foreground">
-                            Need help with your website?
-                          </p>
-                          <p className="mt-1 text-sm text-muted-foreground">
-                            We build high-performance websites that generate real results for businesses in Kenya and beyond.
-                          </p>
-                          <Link
-                            to="/contact"
-                            className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary hover:underline"
-                          >
-                            Get a Free Consultation <ArrowRight className="w-4 h-4" />
-                          </Link>
-                        </div>
-                      )}
-
-                      {isHeading ? (
-                        <h2
-                          id={headingId}
-                          className="mt-10 mb-4 font-display text-xl md:text-2xl font-bold text-foreground scroll-mt-24"
-                        >
-                          {headingText}
-                        </h2>
-                      ) : (
-                        <p className="mb-5 text-muted-foreground leading-relaxed text-base">
-                          {block}
-                        </p>
-                      )}
-                    </div>
+                  return isHeading ? (
+                    <h2 key={i} id={id} className="text-2xl font-bold mt-10">
+                      {text}
+                    </h2>
+                  ) : (
+                    <p
+                      key={i}
+                      className="mt-4 text-muted-foreground leading-relaxed"
+                    >
+                      {block}
+                    </p>
                   );
                 })}
-              </div>
 
-              {/* Bottom CTA */}
-              <div className="mt-14 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
-                <h3 className="font-display text-xl font-bold text-foreground">
-                  Ready to Grow Your Business Online?
-                </h3>
-                <p className="mt-2 text-muted-foreground">
-                  Let's build a website that actually brings you leads, customers, and revenue.
-                </p>
-                <div className="mt-5 flex flex-col sm:flex-row gap-3">
-                  <Link to="/contact">
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="h-11 px-6 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
-                    >
-                      Start Your Project
-                    </motion.button>
-                  </Link>
-                  <Link to="/portfolio">
-                    <motion.button
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="h-11 px-6 rounded-lg border border-border text-foreground font-semibold text-sm hover:bg-accent transition-colors"
-                    >
-                      View Our Work
-                    </motion.button>
-                  </Link>
+                {/* Bottom CTA */}
+                <div className="mt-14 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20">
+                  <h3 className="font-display text-xl font-bold text-foreground">
+                    Ready to Grow Your Business Online?
+                  </h3>
+                  <p className="mt-2 text-muted-foreground">
+                    Let's build a website that actually brings you leads,
+                    customers, and revenue.
+                  </p>
+                  <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                    <Link to="/contact">
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="h-11 px-6 rounded-lg bg-primary text-primary-foreground font-semibold text-sm"
+                      >
+                        Start Your Project
+                      </motion.button>
+                    </Link>
+                    <Link to="/portfolio">
+                      <motion.button
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                        className="h-11 px-6 rounded-lg border border-border text-foreground font-semibold text-sm hover:bg-accent transition-colors"
+                      >
+                        View Our Work
+                      </motion.button>
+                    </Link>
+                  </div>
                 </div>
               </div>
             </motion.article>
 
-            {/* Right – Sidebar */}
             <motion.aside
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -244,11 +389,12 @@ const BlogPost = () => {
             >
               <div className="lg:sticky lg:top-28 space-y-8">
                 {/* Table of Contents */}
-                {headings.length > 0 && (
+                {headings?.length > 0 && (
                   <div className="p-5 rounded-xl border border-border bg-card">
                     <h4 className="font-display text-sm font-bold text-foreground uppercase tracking-wider mb-3">
                       Table of Contents
                     </h4>
+
                     <nav className="space-y-1">
                       {headings.map((h) => (
                         <button
@@ -290,7 +436,11 @@ const BlogPost = () => {
                       aria-label="Copy link"
                       className="flex-1 h-9 rounded-lg border border-border flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary transition-colors"
                     >
-                      {copied ? <Check className="w-4 h-4 text-green-500" /> : <Link2 className="w-4 h-4" />}
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Link2 className="w-4 h-4" />
+                      )}
                     </button>
                   </div>
                 </div>
@@ -301,7 +451,8 @@ const BlogPost = () => {
                     Free Website Audit
                   </h4>
                   <p className="mt-2 text-sm opacity-90 leading-relaxed">
-                    Find out what's holding your website back. Get a free, no-obligation audit from our team.
+                    Find out what's holding your website back. Get a free,
+                    no-obligation audit from our team.
                   </p>
                   <Link to="/contact">
                     <button className="mt-4 w-full h-10 rounded-lg bg-background text-foreground font-semibold text-sm hover:bg-accent transition-colors">
@@ -350,12 +501,18 @@ const BlogPost = () => {
                       KM
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-foreground">Kelvin Munene</p>
-                      <p className="text-xs text-muted-foreground">Founder, KevCodePulse</p>
+                      <p className="text-sm font-semibold text-foreground">
+                        Kelvin Munene
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Founder, KevCodePulse
+                      </p>
                     </div>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    6+ years building high-performance websites for businesses in Kenya and beyond. Passionate about speed, SEO, and results-driven design.
+                    6+ years building high-performance websites for businesses
+                    in Kenya and beyond. Passionate about speed, SEO, and
+                    results-driven design.
                   </p>
                 </div>
               </div>
