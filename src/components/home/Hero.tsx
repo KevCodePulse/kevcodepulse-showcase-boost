@@ -36,7 +36,7 @@ const Hero = () => (
                 to="/portfolio"
                 className="inline-block px-8 py-4 text-sm font-bold text-foreground border border-border rounded-lg hover:border-foreground/20 transition-colors"
               >
-                View Our Work
+                Visit Portfolio
               </Link>
             </motion.div>
           </div>
