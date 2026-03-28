@@ -7,6 +7,7 @@ import PortfolioPreview from "@/components/home/PortfolioPreview";
 import Process from "@/components/home/Process";
 import Testimonials from "@/components/home/Testimonials";
 import WhyChooseUs from "@/components/home/WhyChooseUs";
+import Pricing from "@/components/home/Pricing";
 import HomeFAQ from "@/components/home/HomeFAQ";
 import FinalCTA from "@/components/home/FinalCTA";
 
@@ -21,6 +22,7 @@ const Index = () => (
     <Process />
     <Testimonials />
     <WhyChooseUs />
+    <Pricing />
     <HomeFAQ />
     <FinalCTA />
   </>
