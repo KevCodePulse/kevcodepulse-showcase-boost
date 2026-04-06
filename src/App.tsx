@@ -15,6 +15,7 @@ import BlogPost from "./pages/BlogPost";
 import FAQPage from "./pages/FAQ";
 import TherapistLanding from "./pages/TherapistLanding";
 import TherapistLocationLanding from "./pages/TherapistLocationLanding";
+import AuditPage from "./pages/AuditPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
