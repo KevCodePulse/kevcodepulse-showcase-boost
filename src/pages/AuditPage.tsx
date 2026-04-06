@@ -99,10 +99,31 @@ const AuditPage = () => {
     setResults(null);
 
     try {
-      const cleanUrl = url.startsWith("http") ? url : `https://${url}`;
-      const res = await fetch(`/api/audit?url=${encodeURIComponent(cleanUrl)}`);
-      if (!res.ok) throw new Error("Audit failed");
-      const data: AuditResult = await res.json();
+      // TODO: Replace mock with real API call once Google PageSpeed API is integrated
+      // const cleanUrl = url.startsWith("http") ? url : `https://${url}`;
+      // const res = await fetch(`/api/audit?url=${encodeURIComponent(cleanUrl)}`);
+      // if (!res.ok) throw new Error("Audit failed");
+      // const data: AuditResult = await res.json();
+
+      await new Promise((r) => setTimeout(r, 2500)); // Simulate network delay
+
+      const rand = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+      const data: AuditResult = {
+        performance: rand(35, 98),
+        seo: rand(40, 100),
+        accessibility: rand(50, 100),
+        bestPractices: rand(45, 100),
+        suggestions: [
+          "Serve images in next-gen formats (WebP, AVIF) to reduce load times",
+          "Eliminate render-blocking resources — defer non-critical CSS/JS",
+          "Add descriptive alt text to all images for better accessibility & SEO",
+          "Enable text compression (Gzip/Brotli) on your server",
+          "Reduce unused JavaScript to improve page load speed",
+          "Implement lazy loading for below-the-fold images",
+          "Add meta descriptions to all pages for better search rankings",
+          "Ensure tap targets are large enough for mobile users",
+        ].sort(() => Math.random() - 0.5).slice(0, rand(3, 6)),
+      };
       setResults(data);
     } catch {
       setError("Failed to analyze website. Please check the URL and try again.");
