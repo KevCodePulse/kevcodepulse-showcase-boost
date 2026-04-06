@@ -15,6 +15,7 @@ import BlogPost from "./pages/BlogPost";
 import FAQPage from "./pages/FAQ";
 import TherapistLanding from "./pages/TherapistLanding";
 import TherapistLocationLanding from "./pages/TherapistLocationLanding";
+import AuditPage from "./pages/AuditPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/therapists" element={<TherapistLanding />} />
             <Route path="/therapists/:location" element={<TherapistLocationLanding />} />
+            <Route path="/audit" element={<AuditPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
