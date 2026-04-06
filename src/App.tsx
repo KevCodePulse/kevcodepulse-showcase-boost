@@ -39,6 +39,7 @@ const App = () => (
             <Route path="/faq" element={<FAQPage />} />
             <Route path="/therapists" element={<TherapistLanding />} />
             <Route path="/therapists/:location" element={<TherapistLocationLanding />} />
+            <Route path="/audit" element={<AuditPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
