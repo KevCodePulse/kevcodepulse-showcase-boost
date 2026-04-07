@@ -421,63 +421,68 @@ const AuditPage = () => {
                     {results.suggestions.map((item, i) => (
                       <motion.div
                         key={item.id}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.08 }}
-                        className="group relative flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:shadow-md transition-all duration-300"
+                        className="group relative flex flex-col sm:flex-row sm:items-start gap-3 p-4 sm:p-5 rounded-xl border border-border bg-card hover:shadow-md transition-all duration-300"
                       >
-                        {/* Icon */}
-                        <div
-                          className={`
-                shrink-0 mt-0.5 w-10 h-10 rounded-lg flex items-center justify-center
-                ${
-                  item.impact === "high"
-                    ? "bg-red-500/10 text-red-500"
-                    : item.impact === "medium"
-                      ? "bg-yellow-500/10 text-yellow-500"
-                      : "bg-green-500/10 text-green-500"
-                }
-              `}
-                        >
-                          <AlertTriangle className="w-5 h-5" />
+                        {/* Icon + Badge row on mobile */}
+                        <div className="flex items-center justify-between sm:block">
+                          <div
+                            className={`shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${
+                              item.impact === "high"
+                                ? "bg-red-500/10 text-red-500"
+                                : item.impact === "medium"
+                                  ? "bg-yellow-500/10 text-yellow-500"
+                                  : "bg-green-500/10 text-green-500"
+                            }`}
+                          >
+                            <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </div>
+                          <span
+                            className={`sm:hidden text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              item.impact === "high"
+                                ? "bg-red-500/10 text-red-500"
+                                : item.impact === "medium"
+                                  ? "bg-yellow-500/10 text-yellow-500"
+                                  : "bg-green-500/10 text-green-500"
+                            }`}
+                          >
+                            {item.impact.toUpperCase()}
+                          </span>
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between gap-3">
-                            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="font-semibold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors break-words">
                               {item.title}
                             </h3>
-
                             <span
-                              className={`text-xs font-semibold px-2 py-1 rounded-full
-                    ${
-                      item.impact === "high"
-                        ? "bg-red-500/10 text-red-500"
-                        : item.impact === "medium"
-                          ? "bg-yellow-500/10 text-yellow-500"
-                          : "bg-green-500/10 text-green-500"
-                    }
-                  `}
+                              className={`hidden sm:inline-block shrink-0 text-xs font-semibold px-2 py-1 rounded-full ${
+                                item.impact === "high"
+                                  ? "bg-red-500/10 text-red-500"
+                                  : item.impact === "medium"
+                                    ? "bg-yellow-500/10 text-yellow-500"
+                                    : "bg-green-500/10 text-green-500"
+                              }`}
                             >
                               {item.impact.toUpperCase()}
                             </span>
                           </div>
 
-                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-3">
                             {item.description}
                           </p>
 
-                          <div className="flex items-center justify-between mt-3">
+                          <div className="flex items-center justify-between mt-2 sm:mt-3">
                             <p className="text-xs text-muted-foreground">
-                              Score impact:{" "}
+                              Score:{" "}
                               <span className="font-medium text-foreground">
                                 {Math.round(item.score * 100)}%
                               </span>
                             </p>
-
-                            {/* Progress bar */}
-                            <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className="w-20 sm:w-24 h-1.5 bg-muted rounded-full overflow-hidden">
                               <motion.div
                                 className={`h-full rounded-full ${
                                   item.impact === "high"
