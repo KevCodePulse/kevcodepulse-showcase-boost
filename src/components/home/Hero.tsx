@@ -25,7 +25,7 @@ const Hero = () => (
           <div className="mt-8 flex flex-wrap gap-4">
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
               <Link
-                to="/contact"
+                to="/audit"
                 className="shimmer inline-block px-8 py-4 text-sm font-bold text-primary-foreground rounded-lg glow-primary"
               >
                 Get a Free Website Audit
