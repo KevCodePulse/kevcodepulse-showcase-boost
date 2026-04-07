@@ -15,8 +15,10 @@ import BlogPost from "./pages/BlogPost";
 import FAQPage from "./pages/FAQ";
 import TherapistLanding from "./pages/TherapistLanding";
 import TherapistLocationLanding from "./pages/TherapistLocationLanding";
-import AuditPage from "./pages/AuditPage";
 import NotFound from "./pages/NotFound";
+import HubPage from "./pages/HubPage";
+import ServicePage from "./pages/ServicePage";
+import AuditPage from "./pages/AuditPage";
 
 const queryClient = new QueryClient();
 
@@ -37,8 +39,13 @@ const App = () => (
             <Route path="/blog" element={<BlogPage />} />
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/faq" element={<FAQPage />} />
+            <Route path="/:slug" element={<ServicePage />} />
+            <Route path="/hub/:slug" element={<HubPage />} />
             <Route path="/therapists" element={<TherapistLanding />} />
-            <Route path="/therapists/:location" element={<TherapistLocationLanding />} />
+            <Route
+              path="/therapists/:location"
+              element={<TherapistLocationLanding />}
+            />
             <Route path="/audit" element={<AuditPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
