@@ -1,8 +1,8 @@
 export const siteConfig = {
   name: "KevCodePulse",
-  phone: "+254 700 000 000",
-  email: "hello@kevcodepulse.com",
-  whatsapp: "254700000000",
+  phone: "+254 726 042 822",
+  email: "support@kevcodepulse.com",
+  whatsapp: "254726042822",
   whatsappMessage: "Hi, I'm interested in your web design services. Can we discuss my project?",
   address: "Nairobi, Kenya",
   socials: {
