@@ -505,25 +505,25 @@ const AuditPage = () => {
               </section>
             )}
             {/* Lead Capture */}
-            <section className="py-16 md:py-20">
+            <section className="py-12 md:py-20">
               <div className="container mx-auto px-4 max-w-2xl">
-                <div className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-8 md:p-12 text-center overflow-hidden">
+                <div className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-6 sm:p-8 md:p-12 text-center overflow-hidden">
                   <div className="absolute top-4 right-4">
                     <Lock className="w-5 h-5 text-primary/40" />
                   </div>
 
                   <Award className="w-10 h-10 text-primary mx-auto mb-4" />
-                  <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tighter text-foreground mb-2">
+                  <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tighter text-foreground mb-2">
                     Get Full AI Report + Fix Plan
                   </h2>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                  <p className="text-muted-foreground mb-6 sm:mb-8 max-w-md mx-auto text-sm sm:text-base">
                     We'll send you a detailed breakdown with exact steps to fix
                     every issue and boost your scores.
                   </p>
 
                   <form
                     onSubmit={handleLeadSubmit}
-                    className="space-y-4 max-w-sm mx-auto"
+                    className="space-y-3 sm:space-y-4 max-w-sm mx-auto"
                   >
                     <Input
                       type="email"
@@ -533,7 +533,7 @@ const AuditPage = () => {
                         setLeadForm({ ...leadForm, email: e.target.value })
                       }
                       placeholder="Your email address"
-                      className="h-12 text-base"
+                      className="h-13 sm:h-12 text-base rounded-xl"
                     />
                     <Input
                       type="tel"
@@ -542,27 +542,52 @@ const AuditPage = () => {
                         setLeadForm({ ...leadForm, whatsapp: e.target.value })
                       }
                       placeholder="WhatsApp number (optional)"
-                      className="h-12 text-base"
+                      className="h-13 sm:h-12 text-base rounded-xl"
                     />
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full h-12 font-semibold"
+                      className="w-full h-13 sm:h-12 font-semibold text-base rounded-xl"
                     >
                       <Send className="w-4 h-4 mr-2" /> Send Full Report
                     </Button>
                   </form>
 
-                  <div className="mt-6">
+                  <div className="mt-5">
                     <a
                       href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent("I want my full website audit report")}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-colors"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-secondary hover:text-secondary/80 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4" />
                       Or chat with us on WhatsApp
                     </a>
+                  </div>
+                </div>
+
+                {/* Contact CTA for fixing */}
+                <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2">
+                    Need Help Fixing These Issues?
+                  </h3>
+                  <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-md mx-auto">
+                    Our team can redesign, optimize, and supercharge your website so it ranks higher and converts more visitors into clients.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-sm mx-auto">
+                    <Button asChild size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
+                      <a href="/contact">Get a Free Quote</a>
+                    </Button>
+                    <Button asChild variant="outline" size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
+                      <a
+                        href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent("Hi, I need help fixing my website issues from the audit.")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        WhatsApp Us
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>
