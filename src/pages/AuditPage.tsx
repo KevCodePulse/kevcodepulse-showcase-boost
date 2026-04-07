@@ -547,9 +547,9 @@ const AuditPage = () => {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full h-13 sm:h-12 font-semibold text-base rounded-xl"
+                      className="w-full h-14 sm:h-12 font-semibold text-base rounded-xl"
                     >
-                      <Send className="w-4 h-4 mr-2" /> Send Full Report
+                      <Send className="w-5 h-5 mr-2" /> Send Full Report
                     </Button>
                   </form>
 
@@ -569,26 +569,16 @@ const AuditPage = () => {
                 {/* Contact CTA for fixing */}
                 <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
                   <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2">
-                    Need Help Fixing These Issues?
-                  </h3>
-                  <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-md mx-auto">
-                    Our team can redesign, optimize, and supercharge your website so it ranks higher and converts more visitors into clients.
-                  </p>
-                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-sm mx-auto">
-                    <Button asChild size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
-                      <a href="/contact">Get a Free Quote</a>
-                    </Button>
-                    <Button asChild variant="outline" size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
-                      <a
-                        href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent("Hi, I need help fixing my website issues from the audit.")}`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <MessageCircle className="w-4 h-4 mr-2" />
-                        WhatsApp Us
-                      </a>
-                    </Button>
-                  </div>
+                   Need Help Fixing These Issues?
+                   </h3>
+                   <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-md mx-auto">
+                     Our team can redesign, optimize, and supercharge your website so it ranks higher and converts more visitors into clients.
+                   </p>
+                   <div className="flex justify-center max-w-sm mx-auto">
+                     <Button asChild size="lg" className="w-full h-14 sm:h-12 rounded-xl font-semibold text-base">
+                       <a href="/contact">Request a Free Quote</a>
+                     </Button>
+                   </div>
                 </div>
               </div>
             </section>
