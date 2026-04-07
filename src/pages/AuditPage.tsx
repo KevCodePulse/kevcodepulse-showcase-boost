@@ -288,7 +288,7 @@ const AuditPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
+            className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto px-2"
           >
             <div className="relative flex-1">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -299,17 +299,17 @@ const AuditPage = () => {
                   setError("");
                 }}
                 onKeyDown={(e) => e.key === "Enter" && runAudit()}
-                placeholder="Enter your website URL (e.g. https://example.com)"
-                className="pl-10 h-13 bg-white/10 border-white/20 text-white placeholder:text-white/40 text-base"
+                placeholder="Enter URL (e.g. example.com)"
+                className="pl-10 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/40 text-base rounded-xl"
               />
             </div>
             <Button
               onClick={runAudit}
               disabled={loading}
               size="lg"
-              className="h-13 px-8 font-semibold text-base"
+              className="h-14 px-8 font-semibold text-base rounded-xl w-full sm:w-auto"
             >
-              <Search className="w-4 h-4 mr-2" />
+              <Search className="w-5 h-5 mr-2" />
               {loading ? "Analyzing…" : "Run Free Audit"}
             </Button>
           </motion.div>
@@ -421,63 +421,68 @@ const AuditPage = () => {
                     {results.suggestions.map((item, i) => (
                       <motion.div
                         key={item.id}
-                        initial={{ opacity: 0, x: -20 }}
+                        initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: i * 0.08 }}
-                        className="group relative flex items-start gap-4 p-5 rounded-xl border border-border bg-card hover:shadow-md transition-all duration-300"
+                        className="group relative flex flex-col sm:flex-row sm:items-start gap-3 p-4 sm:p-5 rounded-xl border border-border bg-card hover:shadow-md transition-all duration-300"
                       >
-                        {/* Icon */}
-                        <div
-                          className={`
-                shrink-0 mt-0.5 w-10 h-10 rounded-lg flex items-center justify-center
-                ${
-                  item.impact === "high"
-                    ? "bg-red-500/10 text-red-500"
-                    : item.impact === "medium"
-                      ? "bg-yellow-500/10 text-yellow-500"
-                      : "bg-green-500/10 text-green-500"
-                }
-              `}
-                        >
-                          <AlertTriangle className="w-5 h-5" />
+                        {/* Icon + Badge row on mobile */}
+                        <div className="flex items-center justify-between sm:block">
+                          <div
+                            className={`shrink-0 w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center ${
+                              item.impact === "high"
+                                ? "bg-red-500/10 text-red-500"
+                                : item.impact === "medium"
+                                  ? "bg-yellow-500/10 text-yellow-500"
+                                  : "bg-green-500/10 text-green-500"
+                            }`}
+                          >
+                            <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5" />
+                          </div>
+                          <span
+                            className={`sm:hidden text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              item.impact === "high"
+                                ? "bg-red-500/10 text-red-500"
+                                : item.impact === "medium"
+                                  ? "bg-yellow-500/10 text-yellow-500"
+                                  : "bg-green-500/10 text-green-500"
+                            }`}
+                          >
+                            {item.impact.toUpperCase()}
+                          </span>
                         </div>
 
                         {/* Content */}
-                        <div className="flex-1">
-                          <div className="flex items-start justify-between gap-3">
-                            <h3 className="font-semibold text-foreground group-hover:text-primary transition-colors">
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-start justify-between gap-2">
+                            <h3 className="font-semibold text-sm sm:text-base text-foreground group-hover:text-primary transition-colors break-words">
                               {item.title}
                             </h3>
-
                             <span
-                              className={`text-xs font-semibold px-2 py-1 rounded-full
-                    ${
-                      item.impact === "high"
-                        ? "bg-red-500/10 text-red-500"
-                        : item.impact === "medium"
-                          ? "bg-yellow-500/10 text-yellow-500"
-                          : "bg-green-500/10 text-green-500"
-                    }
-                  `}
+                              className={`hidden sm:inline-block shrink-0 text-xs font-semibold px-2 py-1 rounded-full ${
+                                item.impact === "high"
+                                  ? "bg-red-500/10 text-red-500"
+                                  : item.impact === "medium"
+                                    ? "bg-yellow-500/10 text-yellow-500"
+                                    : "bg-green-500/10 text-green-500"
+                              }`}
                             >
                               {item.impact.toUpperCase()}
                             </span>
                           </div>
 
-                          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
+                          <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed line-clamp-3">
                             {item.description}
                           </p>
 
-                          <div className="flex items-center justify-between mt-3">
+                          <div className="flex items-center justify-between mt-2 sm:mt-3">
                             <p className="text-xs text-muted-foreground">
-                              Score impact:{" "}
+                              Score:{" "}
                               <span className="font-medium text-foreground">
                                 {Math.round(item.score * 100)}%
                               </span>
                             </p>
-
-                            {/* Progress bar */}
-                            <div className="w-24 h-1.5 bg-muted rounded-full overflow-hidden">
+                            <div className="w-20 sm:w-24 h-1.5 bg-muted rounded-full overflow-hidden">
                               <motion.div
                                 className={`h-full rounded-full ${
                                   item.impact === "high"
@@ -500,25 +505,25 @@ const AuditPage = () => {
               </section>
             )}
             {/* Lead Capture */}
-            <section className="py-16 md:py-20">
+            <section className="py-12 md:py-20">
               <div className="container mx-auto px-4 max-w-2xl">
-                <div className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-8 md:p-12 text-center overflow-hidden">
+                <div className="relative rounded-2xl border border-primary/20 bg-gradient-to-br from-primary/5 via-card to-secondary/5 p-6 sm:p-8 md:p-12 text-center overflow-hidden">
                   <div className="absolute top-4 right-4">
                     <Lock className="w-5 h-5 text-primary/40" />
                   </div>
 
                   <Award className="w-10 h-10 text-primary mx-auto mb-4" />
-                  <h2 className="font-display text-2xl md:text-3xl font-bold tracking-tighter text-foreground mb-2">
+                  <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-bold tracking-tighter text-foreground mb-2">
                     Get Full AI Report + Fix Plan
                   </h2>
-                  <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+                  <p className="text-muted-foreground mb-6 sm:mb-8 max-w-md mx-auto text-sm sm:text-base">
                     We'll send you a detailed breakdown with exact steps to fix
                     every issue and boost your scores.
                   </p>
 
                   <form
                     onSubmit={handleLeadSubmit}
-                    className="space-y-4 max-w-sm mx-auto"
+                    className="space-y-3 sm:space-y-4 max-w-sm mx-auto"
                   >
                     <Input
                       type="email"
@@ -528,7 +533,7 @@ const AuditPage = () => {
                         setLeadForm({ ...leadForm, email: e.target.value })
                       }
                       placeholder="Your email address"
-                      className="h-12 text-base"
+                      className="h-13 sm:h-12 text-base rounded-xl"
                     />
                     <Input
                       type="tel"
@@ -537,27 +542,52 @@ const AuditPage = () => {
                         setLeadForm({ ...leadForm, whatsapp: e.target.value })
                       }
                       placeholder="WhatsApp number (optional)"
-                      className="h-12 text-base"
+                      className="h-13 sm:h-12 text-base rounded-xl"
                     />
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full h-12 font-semibold"
+                      className="w-full h-13 sm:h-12 font-semibold text-base rounded-xl"
                     >
                       <Send className="w-4 h-4 mr-2" /> Send Full Report
                     </Button>
                   </form>
 
-                  <div className="mt-6">
+                  <div className="mt-5">
                     <a
                       href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent("I want my full website audit report")}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-medium text-green-600 hover:text-green-700 transition-colors"
+                      className="inline-flex items-center gap-2 text-sm font-medium text-secondary hover:text-secondary/80 transition-colors"
                     >
                       <MessageCircle className="w-4 h-4" />
                       Or chat with us on WhatsApp
                     </a>
+                  </div>
+                </div>
+
+                {/* Contact CTA for fixing */}
+                <div className="mt-8 rounded-2xl border border-border bg-card p-6 sm:p-8 text-center">
+                  <h3 className="font-display text-lg sm:text-xl font-bold text-foreground mb-2">
+                    Need Help Fixing These Issues?
+                  </h3>
+                  <p className="text-muted-foreground text-sm sm:text-base mb-5 max-w-md mx-auto">
+                    Our team can redesign, optimize, and supercharge your website so it ranks higher and converts more visitors into clients.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3 justify-center max-w-sm mx-auto">
+                    <Button asChild size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
+                      <a href="/contact">Get a Free Quote</a>
+                    </Button>
+                    <Button asChild variant="outline" size="lg" className="h-13 sm:h-12 rounded-xl font-semibold flex-1">
+                      <a
+                        href={`https://wa.me/${siteConfig.whatsapp}?text=${encodeURIComponent("Hi, I need help fixing my website issues from the audit.")}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <MessageCircle className="w-4 h-4 mr-2" />
+                        WhatsApp Us
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>
