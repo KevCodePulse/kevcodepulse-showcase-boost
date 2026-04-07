@@ -288,7 +288,7 @@ const AuditPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
-            className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto"
+            className="flex flex-col sm:flex-row gap-3 max-w-xl mx-auto px-2"
           >
             <div className="relative flex-1">
               <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
@@ -299,17 +299,17 @@ const AuditPage = () => {
                   setError("");
                 }}
                 onKeyDown={(e) => e.key === "Enter" && runAudit()}
-                placeholder="Enter your website URL (e.g. https://example.com)"
-                className="pl-10 h-13 bg-white/10 border-white/20 text-white placeholder:text-white/40 text-base"
+                placeholder="Enter URL (e.g. example.com)"
+                className="pl-10 h-14 bg-white/10 border-white/20 text-white placeholder:text-white/40 text-base rounded-xl"
               />
             </div>
             <Button
               onClick={runAudit}
               disabled={loading}
               size="lg"
-              className="h-13 px-8 font-semibold text-base"
+              className="h-14 px-8 font-semibold text-base rounded-xl w-full sm:w-auto"
             >
-              <Search className="w-4 h-4 mr-2" />
+              <Search className="w-5 h-5 mr-2" />
               {loading ? "Analyzing…" : "Run Free Audit"}
             </Button>
           </motion.div>
